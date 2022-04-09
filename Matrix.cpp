@@ -269,11 +269,46 @@ namespace zich{
 
     std::ostream& operator<<(std::ostream& output, const Matrix& other)
     {
-        return output;
+        string res;
+        for(int i=0; i < other.rows; i++){
+            res+="[ ";
+            for(int j=0; j< other.columns; i++){
+                res+=other.mat[i][j];
+                res+=" ";
+            }
+            res+="]\n";
+        }
+        return(output<<res);
     }
+
     std::istream& operator>>(std::istream& input, Matrix& other)
     {
-        input>>other.mat[0][0];
-        return input;
+        char curr;
+        int i=0;
+        int j=0;
+        int cols = 0;
+        vector <vector<double>> vec;
+        while(input){
+            input>>curr;
+            if(curr == '['){
+                input>>curr;
+                while(curr != ']'){
+                    vec[i][j] = (double)curr;
+                    j++;
+                    input>>curr;
+                }
+                if(cols != 0 && cols != j){//not all the rows are in the same length
+                    throw("invalid input");
+                }
+                else if(cols == 0){
+                    cols = j;
+                }
+                j=0;
+                i++;
+            }
+        }
+        other.rows = i;
+        other.columns = cols;
+        other.mat = vec;
     }
 }
