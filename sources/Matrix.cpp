@@ -9,6 +9,12 @@ namespace zich{
 
     //regular constructor
     Matrix::Matrix(vector<double> vec, int n, int m):rows(n), columns(m){
+        if(n<=0 || m<=0){
+            throw("Rows and columns must be positive");
+        }
+        if(vec.size()!=(n*m)){
+            throw("Rows and columns doesn't mach the vector's size");
+        }
         unsigned int k=0;
         for(unsigned int i=0; i<n; i++){
             vector <double> v1;
@@ -313,12 +319,17 @@ namespace zich{
     {
         string res="";
         for(unsigned int i=0; i < other.rows; i++){
-            // res+="[ ";
-            for(unsigned int j=0; j< other.columns; i++){
-                // res+=other.mat[i][j];
-                // res+=" ";
+            res+="[";
+            for(unsigned int j=0; j < other.columns; j++){
+                res+=to_string((int)other.mat[i][j]);
+                if(j<other.columns-1){
+                    res+=" ";
+                }
             }
-            // res+="]\n";
+            res+="]";
+            if(i<other.rows-1){
+                res+="\n";
+            }
         }
         return(output<<res);
     }
@@ -335,19 +346,37 @@ namespace zich{
             input>>curr;
             if(curr == '['){
                 input>>curr;
+                vector <double> v1;
                 while(curr != ']'){//go through a row
-                    vec[i][j] = (double)curr;
+                    v1.push_back((double)curr);
                     j++;
                     input>>curr;
                 }
                 if(cols != 0 && cols != j){//not all the rows are in the same length
+                    cout<<"1"<<endl;
                     throw("invalid input");
                 }
                 else if(cols == 0){
                     cols = j;
                 }
+                vec.push_back(v1);
                 j=0;
                 i++;
+                input>>curr;
+                if(curr == '\n'){
+                    break;
+                }
+                if(curr != ','){
+                    cout<<"2"<<endl;
+                    throw("invalid input");
+                }
+                // input>>curr;
+                // if(curr != ' '){
+                //     throw("invalid input");
+                // }
+            }else{
+                cout<<"3"<<endl;
+                throw("invalid input");
             }
         }
         other.rows = (int)i;
