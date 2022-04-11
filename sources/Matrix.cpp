@@ -76,7 +76,6 @@ namespace zich{
                 vec.push_back(this->mat[i][j] + other.mat[i][j]);
             }
         }
-        cout<<"passed+"<<endl;
         return(Matrix{vec, n, m});
     }
 
@@ -85,7 +84,6 @@ namespace zich{
         size_check(*this, other);
         int n = this->rows;
         int m = this->columns;
-        unsigned int l=0;
         vector <double> vec;
         for(unsigned int i=0; i<n; i++){
             for(unsigned int j=0; j<m; j++){
@@ -129,7 +127,7 @@ namespace zich{
         unsigned int l=0;
         for(unsigned int i=0; i<this->rows; i++){
             for(unsigned int j=0; j<this->columns; j++){
-                vec[l++] = (this->mat[i][j]) * -1;
+                vec.push_back((this->mat[i][j]) * -1);
             }
         }
         return (Matrix{vec, this->rows, this->columns});
@@ -246,8 +244,7 @@ namespace zich{
                 l++;
             }
         }
-        cout<<"passed"<<endl;
-        return (Matrix{vec, n, m});
+        return (Matrix{vec, this->rows, other.columns});
     }
 
     //A *= B
@@ -263,7 +260,6 @@ namespace zich{
                 for (unsigned int k = 0; k < other.rows; k++) {
                     vec[l] += this->mat[i][k] * other.mat[k][j];
                 }
-                cout<<vec[l]<<endl;
                 l++;
             }
         }
@@ -315,14 +311,14 @@ namespace zich{
     //cout<<A (output)
     std::ostream& operator<<(std::ostream& output, const Matrix& other)
     {
-        string res;
+        string res="";
         for(unsigned int i=0; i < other.rows; i++){
-            res+="[ ";
+            // res+="[ ";
             for(unsigned int j=0; j< other.columns; i++){
-                res+=other.mat[i][j];
-                res+=" ";
+                // res+=other.mat[i][j];
+                // res+=" ";
             }
-            res+="]\n";
+            // res+="]\n";
         }
         return(output<<res);
     }
