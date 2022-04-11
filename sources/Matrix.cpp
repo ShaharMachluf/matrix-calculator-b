@@ -9,10 +9,14 @@ namespace zich{
 
     //regular constructor
     Matrix::Matrix(vector<double> vec, int n, int m):rows(n), columns(m){
-        for(int i=0; i<this->rows; i++){
-            for(int j=0; j<this->columns; j++){
-                this->mat[i][j] = vec[i+j];
+        unsigned int k=0;
+        for(unsigned int i=0; i<n; i++){
+            vector <double> v1;
+            for(unsigned int j=0; j<m; j++){
+                v1.push_back(vec[k]);
+                k++;
             }
+            this->mat.push_back(v1);
         }
     }
 
@@ -41,8 +45,8 @@ namespace zich{
     //get the sum of the elements in the matrix for comperacent
     double mat_sum(const Matrix &mat1){
         int sum = 0;
-        for(int i = 0; i < mat1.rows; i++){
-            for(int j = 0; j < mat1.columns; j++){
+        for(unsigned int i = 0; i < mat1.rows; i++){
+            for(unsigned int j = 0; j < mat1.columns; j++){
                 sum += mat1.mat[i][j];
             }
         }
@@ -67,11 +71,12 @@ namespace zich{
         int n = this->rows;
         int m = this->columns;
         vector <double> vec;
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                vec[i+j] = this->mat[i][j] + other.mat[i][j];
+        for(unsigned int i=0; i<n; i++){
+            for(unsigned int j=0; j<m; j++){
+                vec.push_back(this->mat[i][j] + other.mat[i][j]);
             }
         }
+        cout<<"passed+"<<endl;
         return(Matrix{vec, n, m});
     }
 
@@ -80,10 +85,11 @@ namespace zich{
         size_check(*this, other);
         int n = this->rows;
         int m = this->columns;
+        unsigned int l=0;
         vector <double> vec;
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                vec[i+j] = this->mat[i][j] - other.mat[i][j];
+        for(unsigned int i=0; i<n; i++){
+            for(unsigned int j=0; j<m; j++){
+                vec.push_back(this->mat[i][j] - other.mat[i][j]);
             }
         }
         return(Matrix{vec, n, m});
@@ -92,8 +98,8 @@ namespace zich{
     //A+=B
     Matrix& Matrix::operator+=(const Matrix &other){
         size_check(*this, other);
-        for(int i=0; i<this->rows; i++){
-            for(int j=0; j<this->columns; j++){
+        for(unsigned int i=0; i<this->rows; i++){
+            for(unsigned int j=0; j<this->columns; j++){
                 this->mat[i][j] += other.mat[i][j];
             }
         }
@@ -103,8 +109,8 @@ namespace zich{
     //A-=B
     Matrix& Matrix::operator-=(const Matrix &other){
         size_check(*this, other);
-        for(int i=0; i<this->rows; i++){
-            for(int j=0; j<this->columns; j++){
+        for(unsigned int i=0; i<this->rows; i++){
+            for(unsigned int j=0; j<this->columns; j++){
                 this->mat[i][j] -= other.mat[i][j];
             }
         }
@@ -120,9 +126,10 @@ namespace zich{
     //A = -B
     Matrix Matrix::operator-() const{//onary -
         vector <double> vec;
-        for(int i=0; i<this->rows; i++){
-            for(int j=0; j<this->columns; j++){
-                vec[i+j] = (this->mat[i][j]) * -1;
+        unsigned int l=0;
+        for(unsigned int i=0; i<this->rows; i++){
+            for(unsigned int j=0; j<this->columns; j++){
+                vec[l++] = (this->mat[i][j]) * -1;
             }
         }
         return (Matrix{vec, this->rows, this->columns});
@@ -131,8 +138,8 @@ namespace zich{
     //A==B (all the elements are the same)
     bool operator==(const Matrix &mat1, const Matrix &mat2){
         size_check(mat1, mat2);
-        for(int i=0; i<mat1.rows; i++){
-            for(int j=0; j<mat1.columns; j++){
+        for(unsigned int i=0; i<mat1.rows; i++){
+            for(unsigned int j=0; j<mat1.columns; j++){
                 if(mat1.mat[i][j] != mat2.mat[i][j]){
                     return(false);
                 }
@@ -181,8 +188,8 @@ namespace zich{
 
     //++A (increase all the elements by 1)
     Matrix& Matrix::operator++(){
-        for(int i=0; i<this->rows; i++){
-            for(int j=0; j<this->columns; j++){
+        for(unsigned int i=0; i<this->rows; i++){
+            for(unsigned int j=0; j<this->columns; j++){
                 this->mat[i][j]++;
             }
         }
@@ -191,8 +198,8 @@ namespace zich{
 
     //--A (dencrease all the elements by 1)
     Matrix& Matrix::operator--(){
-        for(int i=0; i<this->rows; i++){
-            for(int j=0; j<this->columns; j++){
+        for(unsigned int i=0; i<this->rows; i++){
+            for(unsigned int j=0; j<this->columns; j++){
                 this->mat[i][j]--;
             }
         }
@@ -202,8 +209,8 @@ namespace zich{
     //A++ (increase all the elements by 1)
     const Matrix Matrix::operator++(const int dummy){
         Matrix copy(*this);
-        for(int i=0; i<this->rows; i++){
-            for(int j=0; j<this->columns; j++){
+        for(unsigned int i=0; i<this->rows; i++){
+            for(unsigned int j=0; j<this->columns; j++){
                 this->mat[i][j]++;
             }
         }
@@ -213,8 +220,8 @@ namespace zich{
     //A-- (dencrease all the elements by 1)
     const Matrix Matrix::operator--(const int dummy){
         Matrix copy(*this);
-        for(int i=0; i<this->rows; i++){
-            for(int j=0; j<this->columns; j++){
+        for(unsigned int i=0; i<this->rows; i++){
+            for(unsigned int j=0; j<this->columns; j++){
                 this->mat[i][j]--;
             }
         }
@@ -228,32 +235,42 @@ namespace zich{
         }
         int n = this->rows;
         int m = this->columns;
+        unsigned int l = 0;
         vector <double> vec;
-        for (int i = 0; i < this->rows; i++) {
-            for (int j = 0; j < other.columns; j++) {
-                vec[i+j] = 0;
-                for (int k = 0; k < other.rows; k++) {
-                    vec[i+j] += this->mat[i][k] * other.mat[k][j];
+        for (unsigned int i = 0; i < this->rows; i++) {
+            for (unsigned int j = 0; j < other.columns; j++) {
+                vec.push_back(0);
+                for (unsigned int k = 0; k < other.rows; k++) {
+                    vec[l] += this->mat[i][k] * other.mat[k][j];
                 }
+                l++;
             }
         }
+        cout<<"passed"<<endl;
         return (Matrix{vec, n, m});
     }
 
     //A *= B
     Matrix& Matrix::operator*=(const Matrix &other){
+        if(this->columns != other.rows){
+            throw("Can't multiply the given matrices");
+        }
+        unsigned int l = 0;
         vector <double> vec;
-        for (int i = 0; i < this->rows; i++) {
-            for (int j = 0; j < other.columns; j++) {
-                vec[i+j] = 0;
-                for (int k = 0; k < other.rows; k++) {
-                    vec[i+j] += this->mat[i][k] * other.mat[k][j];
+        for (unsigned int i = 0; i < this->rows; i++) {
+            for (unsigned int j = 0; j < other.columns; j++) {
+                vec.push_back(0);
+                for (unsigned int k = 0; k < other.rows; k++) {
+                    vec[l] += this->mat[i][k] * other.mat[k][j];
                 }
+                cout<<vec[l]<<endl;
+                l++;
             }
         }
-        for(int i=0; i<this->rows; i++){//put everything back to 'this'
-            for(int j=0; j<this->columns; j++){
-                this->mat[i][j] = vec[i+j];
+        l=0;
+        for(unsigned int i=0; i<this->rows; i++){//put everything back to 'this'
+            for(unsigned int j=0; j<this->columns; j++){
+                this->mat[i][j] = vec[l++];
             }
         }
         return(*this);
@@ -261,8 +278,8 @@ namespace zich{
 
     //A *= num
     Matrix& Matrix::operator*=(const double num){
-        for(int i=0; i<this->rows; i++){
-            for(int j=0; j<this->columns; j++){
+        for(unsigned int i=0; i<this->rows; i++){
+            for(unsigned int j=0; j<this->columns; j++){
                 this->mat[i][j] *= num;
             }
         }
@@ -274,9 +291,9 @@ namespace zich{
         int n = this->rows;
         int m = this->columns;
         vector <double> vec;
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                vec[i+j] = this->mat[i][j] * num;
+        for(unsigned int i=0; i<n; i++){
+            for(unsigned int j=0; j<m; j++){
+                vec.push_back(this->mat[i][j] * num);
             }
         }
         return(Matrix{vec, n, m});
@@ -287,9 +304,9 @@ namespace zich{
         int n = mat.rows;
         int m = mat.columns;
         vector <double> vec;
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                vec[i+j] = mat.mat[i][j] * num;
+        for(unsigned int i=0; i<n; i++){
+            for(unsigned int j=0; j<m; j++){
+                vec.push_back(mat.mat[i][j] * num);
             }
         }
         return(Matrix{vec, n, m});
@@ -299,9 +316,9 @@ namespace zich{
     std::ostream& operator<<(std::ostream& output, const Matrix& other)
     {
         string res;
-        for(int i=0; i < other.rows; i++){
+        for(unsigned int i=0; i < other.rows; i++){
             res+="[ ";
-            for(int j=0; j< other.columns; i++){
+            for(unsigned int j=0; j< other.columns; i++){
                 res+=other.mat[i][j];
                 res+=" ";
             }
@@ -314,9 +331,9 @@ namespace zich{
     std::istream& operator>>(std::istream& input, Matrix& other)
     {
         char curr;
-        int i=0;
-        int j=0;
-        int cols = 0;
+        unsigned int i=0;
+        unsigned int j=0;
+        unsigned int cols = 0;
         vector <vector<double>> vec;
         while(input){
             input>>curr;
@@ -337,8 +354,9 @@ namespace zich{
                 i++;
             }
         }
-        other.rows = i;
-        other.columns = cols;
+        other.rows = (int)i;
+        other.columns = (int)cols;
         other.mat = vec;
+        return input;
     }
 }
