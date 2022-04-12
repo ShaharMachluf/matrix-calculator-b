@@ -1,7 +1,9 @@
 #include <iostream>
+#include <ctype.h>
 #include "Matrix.hpp"
 
 using namespace std;
+constexpr int SHIFT_LEFT = 10;
 
 namespace zich{
     //empty constructor
@@ -33,11 +35,11 @@ namespace zich{
         this->mat = other.mat;
     }
 
-    int Matrix::get_row_num(){
+    int Matrix::get_row_num() const{
         return this->rows;
     }
 
-    int Matrix::get_col_num(){
+    int Matrix::get_col_num() const{
         return this->columns;
     }
 
@@ -63,12 +65,11 @@ namespace zich{
     Matrix& Matrix::operator=(const Matrix& mat){
         if(this == &mat){//a=a
             return(*this); 
-        }else{
-            this->rows = mat.rows;
-            this->columns = mat.columns;
-            this->mat = mat.mat;
-            return *this;
         }
+        this->rows = mat.rows;
+        this->columns = mat.columns;
+        this->mat = mat.mat;
+        return *this;
     }
 
     //A = B+C 
@@ -161,32 +162,32 @@ namespace zich{
     //A<B (the sum of A < the sum of B)
     bool operator<(const Matrix &mat1, const Matrix &mat2){
         size_check(mat1, mat2);
-        int mat1_sum = mat_sum(mat1);
-        int mat2_sum = mat_sum(mat2);
+        double mat1_sum = mat_sum(mat1);
+        double mat2_sum = mat_sum(mat2);
         return(mat1_sum < mat2_sum);
     }
 
     //A>B (the sum of A > the sum of B)
     bool operator>(const Matrix &mat1, const Matrix &mat2){
         size_check(mat1, mat2);
-        int mat1_sum = mat_sum(mat1);
-        int mat2_sum = mat_sum(mat2);
+        double mat1_sum = mat_sum(mat1);
+        double mat2_sum = mat_sum(mat2);
         return(mat1_sum > mat2_sum);
     }
 
     //A<=B (the sum of A <= the sum of B)
     bool operator<=(const Matrix &mat1, const Matrix &mat2){
         size_check(mat1, mat2);
-        int mat1_sum = mat_sum(mat1);
-        int mat2_sum = mat_sum(mat2);
+        double mat1_sum = mat_sum(mat1);
+        double mat2_sum = mat_sum(mat2);
         return(mat1_sum <= mat2_sum);
     }
 
     //A>=B (the sum of A >= the sum of B)
     bool operator>=(const Matrix &mat1, const Matrix &mat2){
         size_check(mat1, mat2);
-        int mat1_sum = mat_sum(mat1);
-        int mat2_sum = mat_sum(mat2);
+        double mat1_sum = mat_sum(mat1);
+        double mat2_sum = mat_sum(mat2);
         return(mat1_sum >= mat2_sum);
     }
 
@@ -211,7 +212,7 @@ namespace zich{
     }
 
     //A++ (increase all the elements by 1)
-    const Matrix Matrix::operator++(const int dummy){
+    Matrix Matrix::operator++(const int dummy){
         Matrix copy(*this);
         for(unsigned int i=0; i<this->rows; i++){
             for(unsigned int j=0; j<this->columns; j++){
@@ -222,7 +223,7 @@ namespace zich{
     }
 
     //A-- (dencrease all the elements by 1)
-    const Matrix Matrix::operator--(const int dummy){
+    Matrix Matrix::operator--(const int dummy){
         Matrix copy(*this);
         for(unsigned int i=0; i<this->rows; i++){
             for(unsigned int j=0; j<this->columns; j++){
@@ -237,8 +238,6 @@ namespace zich{
         if(this->columns != other.rows){
             throw("Can't multiply the given matrices");
         }
-        int n = this->rows;
-        int m = this->columns;
         unsigned int l = 0;
         vector <double> vec;
         for (unsigned int i = 0; i < this->rows; i++) {
@@ -317,7 +316,7 @@ namespace zich{
     //cout<<A (output)
     std::ostream& operator<<(std::ostream& output, const Matrix& other)
     {
-        string res="";
+        string res;
         for(unsigned int i=0; i < other.rows; i++){
             res+="[";
             for(unsigned int j=0; j < other.columns; j++){
@@ -337,47 +336,54 @@ namespace zich{
     //cin>>A (input)
     std::istream& operator>>(std::istream& input, Matrix& other)
     {
-        char curr;
+        string s;
         unsigned int i=0;
         unsigned int j=0;
         unsigned int cols = 0;
+        unsigned int l = 0;
+        double temp = 0;
         vector <vector<double>> vec;
-        while(input){
-            input>>curr;
-            if(curr == '['){
-                input>>curr;
-                vector <double> v1;
-                while(curr != ']'){//go through a row
-                    v1.push_back((double)curr);
-                    j++;
-                    input>>curr;
-                }
-                if(cols != 0 && cols != j){//not all the rows are in the same length
-                    cout<<"1"<<endl;
-                    throw("invalid input");
-                }
-                else if(cols == 0){
-                    cols = j;
-                }
-                vec.push_back(v1);
-                j=0;
-                i++;
-                input>>curr;
-                if(curr == '\n'){
-                    break;
-                }
-                if(curr != ','){
-                    cout<<"2"<<endl;
-                    throw("invalid input");
-                }
-                // input>>curr;
-                // if(curr != ' '){
-                //     throw("invalid input");
-                // }
-            }else{
-                cout<<"3"<<endl;
+        getline(input, s, {});
+        while(l< s.length()){
+            if(s[l] != '['){
                 throw("invalid input");
             }
+            l++;
+            i++;//new row
+            vector <double> v1;
+            while(s[l]!=']'){//row is not over
+                if(s[l] == ' '){
+                    l++;
+                    continue;
+                }
+                temp = 0;
+                while(s[l] != ' ' && s[l] != ']'){
+                    temp = temp*SHIFT_LEFT + (double)s[l];
+                    l++;
+                }
+                v1.push_back(temp);
+                j++;//new element in the row
+            }
+            vec.push_back(v1);
+            if(cols != 0 && cols != j){//not all the rows are in the same length
+                throw("invalid input");
+            }
+            if(cols == 0){
+                cols = j;
+            }
+            l++;
+            if(s[l] == '\n'){//end of input
+                break;
+            }
+            if(s[l]!= ','){
+                throw("invalid input");
+            }
+            l++;
+            if(s[l] != ' '){
+                throw("invalid input");
+            }
+            l++;
+            j=0;
         }
         other.rows = (int)i;
         other.columns = (int)cols;

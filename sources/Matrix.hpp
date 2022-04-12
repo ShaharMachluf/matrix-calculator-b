@@ -14,8 +14,8 @@ namespace zich{
         Matrix(vector<double> vec, int n, int m);
         Matrix(const Matrix &other); 
         //help functions
-        int get_row_num();
-        int get_col_num();
+        int get_row_num() const;
+        int get_col_num() const;
         friend void size_check(const Matrix &a, const Matrix &b);
         friend double mat_sum(const Matrix &mat1);
         //plus/minus
@@ -36,8 +36,8 @@ namespace zich{
         //increase/decrease
         Matrix& operator++();
         Matrix& operator--();
-        const Matrix operator++(const int dummy);
-        const Matrix operator--(const int dummy);
+        Matrix operator++(const int dummy);
+        Matrix operator--(const int dummy);
         //multiply
         Matrix operator*(double num);
         friend Matrix operator*(const double num, Matrix& mat);
@@ -45,7 +45,7 @@ namespace zich{
         Matrix operator*(const Matrix &other) const;
         Matrix& operator*=(const Matrix &other);
         //input/output
-        friend std::ostream& operator<<(std::ostream& stream, const Matrix& mat);
-        friend std::istream& operator>>(std::istream& stream, Matrix& mat);
+        friend std::ostream& operator<<(std::ostream& output, const Matrix& other);
+        friend std::istream& operator>>(std::istream& input, Matrix& other);
     };
 };
