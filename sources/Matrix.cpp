@@ -344,22 +344,26 @@ namespace zich{
         double temp = 0;
         vector <vector<double>> vec;
         getline(input, s, {});
+        cout<<s[l]<<endl;
         while(l< s.length()){
             if(s[l] != '['){
                 throw("invalid input");
             }
             l++;
+            cout<<s[l]<<endl;
             i++;//new row
             vector <double> v1;
             while(s[l]!=']'){//row is not over
                 if(s[l] == ' '){
                     l++;
+                    cout<<s[l]<<endl;
                     continue;
                 }
                 temp = 0;
                 while(s[l] != ' ' && s[l] != ']'){
                     temp = temp*SHIFT_LEFT + (double)s[l];
                     l++;
+                    cout<<s[l]<<endl;
                 }
                 v1.push_back(temp);
                 j++;//new element in the row
@@ -372,6 +376,7 @@ namespace zich{
                 cols = j;
             }
             l++;
+            cout<<s[l]<<endl;
             if(s[l] == '\n'){//end of input
                 break;
             }
@@ -379,10 +384,12 @@ namespace zich{
                 throw("invalid input");
             }
             l++;
+            cout<<s[l]<<endl;
             if(s[l] != ' '){
                 throw("invalid input");
             }
             l++;
+            cout<<s[l]<<endl;
             j=0;
         }
         other.rows = (int)i;
