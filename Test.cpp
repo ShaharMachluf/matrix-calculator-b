@@ -9,6 +9,7 @@ using namespace zich;
 
 #include <string>
 #include <algorithm>
+#include <sstream>
 using namespace std;
 
 /**
@@ -117,6 +118,7 @@ TEST_CASE("Multiply"){
     std::vector<double> arr = {3, 0, 0, 0, 3, 0, 0, 0, 3};
     Matrix a{arr, 3, 3};
     Matrix b{{9, 0, 0, 0, 9, 0, 0, 0, 9}, 3, 3};
+    //multiply by number
     CHECK((a*3) == b);
     CHECK((3*a) == b);
     CHECK((b*(1/3)) == a);
@@ -126,9 +128,48 @@ TEST_CASE("Multiply"){
     Matrix c{{1,2,3,4}, 2, 2};
     Matrix d{{1,2,3,4}, 2, 2};
     Matrix e{{7, 10, 15, 22}, 2, 2};
+    //multiply 2 matrices
     CHECK((c*d) == e);
     CHECK_THROWS(a*c);
     CHECK_THROWS(c*a);
     c*=d;
     CHECK(c==e);
+    //not square matrices
+    Matrix f{{1,2,3,4,5,6}, 2, 3};
+    Matrix g{{1,2,3,4,5,6}, 3, 2};
+    CHECK_NOTHROW(c*f);
+    CHECK_NOTHROW(g*c);
+    CHECK_NOTHROW(g*f);
+    CHECK_NOTHROW(f*g);
+    CHECK_THROWS(f*c);
+}
+
+TEST_CASE("output"){
+    Matrix a{{1,2,3,4,5,6}, 2, 3};
+    ostringstream os1;
+    os1<<a;
+    CHECK(os1.str() == "[1 2 3]\n[2 5 6]");
+    Matrix b{{1,2,3,4,5,6}, 3, 2};
+    ostringstream os2;
+    os2<<b;
+    CHECK(os2.str() == "[1 2]\n[3 4]\n[5 6]");
+}
+
+TEST_CASE("input"){
+    Matrix a;
+    Matrix b{{1,1,1,1},2 ,2};
+    istringstream is1{"[1 1][1 1]\n"};
+    CHECK_THROWS(is1>>a);
+    istringstream is2{"[1 1],[1 1]\n"};
+    CHECK_THROWS(is2>>a);
+    istringstream is3{"[1 1], 1 1]\n"};
+    CHECK_THROWS(is3>>a);
+    istringstream is4{"1 1], [1 1]\n"};
+    CHECK_THROWS(is4>>a);
+    istringstream is5{"[1 1], [1 1 1]\n"};
+    CHECK_THROWS(is5>>a);
+    istringstream is6{"[1 1], [1 1]\n"};
+    CHECK_NOTHROW(is6>>a);
+    is6>>a;
+    CHECK(a==b);
 }

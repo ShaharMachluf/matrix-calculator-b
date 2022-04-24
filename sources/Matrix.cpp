@@ -178,17 +178,13 @@ namespace zich{
     //A<=B (the sum of A <= the sum of B)
     bool operator<=(const Matrix &mat1, const Matrix &mat2){
         size_check(mat1, mat2);
-        double mat1_sum = mat_sum(mat1);
-        double mat2_sum = mat_sum(mat2);
-        return(mat1_sum <= mat2_sum);
+        return(!(mat1>mat2));
     }
 
     //A>=B (the sum of A >= the sum of B)
     bool operator>=(const Matrix &mat1, const Matrix &mat2){
         size_check(mat1, mat2);
-        double mat1_sum = mat_sum(mat1);
-        double mat2_sum = mat_sum(mat2);
-        return(mat1_sum >= mat2_sum);
+        return(!(mat1<mat2));
     }
 
     //++A (increase all the elements by 1)
@@ -302,15 +298,7 @@ namespace zich{
 
     //A = num * B
     Matrix operator*(const double num, Matrix& mat){
-        int n = mat.rows;
-        int m = mat.columns;
-        vector <double> vec;
-        for(unsigned int i=0; i<n; i++){
-            for(unsigned int j=0; j<m; j++){
-                vec.push_back(mat.mat[i][j] * num);
-            }
-        }
-        return(Matrix{vec, n, m});
+        return(mat*num);
     }
 
     //cout<<A (output)
@@ -319,7 +307,7 @@ namespace zich{
         string res;
         for(unsigned int i=0; i < other.rows; i++){
             res+="[";
-            for(unsigned int j=0; j < other.columns; j++){
+            for(unsigned int j=0; j < other.columns; j++){//print row
                 res+=to_string((int)other.mat[i][j]);
                 if(j<other.columns-1){
                     res+=" ";
